@@ -15,6 +15,8 @@ A real-time flight tracking application that shows aircraft flying over your loc
 - **Dark/Light Themes**: Toggle between themes for better viewing
 - **Distance Calculation**: See how far each flight is from your location
 - **Raw Data Access**: View complete flight data in popup windows
+- **Auto Fullscreen**: Automatically starts fullscreen on Raspberry Pi
+- **Fullscreen Toggle**: Press F11 or Escape to toggle fullscreen mode
 
 ## Screenshots
 
@@ -46,6 +48,7 @@ A real-time flight tracking application that shows aircraft flying over your loc
 
 3. **Run the application**
    ```bash
+   chmod +x piscnr24.py
    python piscnr24.py
    ```
 
@@ -167,6 +170,12 @@ Each flight card displays:
 - **Altitude**: Current altitude in feet
 - **Vertical Speed**: Rate of climb/descent
 - **Distance**: Miles from your location
+
+### Fullscreen Controls
+
+- **Auto Fullscreen**: PiScnr24 automatically starts in fullscreen mode on Raspberry Pi
+- **Toggle Fullscreen**: Press `F11` or `Escape` to switch between fullscreen and windowed mode
+- **Perfect for Touchscreens**: Fullscreen mode is ideal for dedicated Raspberry Pi displays
 
 ## Configuration
 

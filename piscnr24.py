@@ -264,6 +264,7 @@ class FlightTrackerGUI(QMainWindow):
         super().__init__()
         self.gps_filter = GPSFilter(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, DEFAULT_RADIUS_KM)
         self.is_dark_mode = False  # Start with light mode
+        self.is_fullscreen = False  # Track fullscreen state
         self.init_ui()
         self.init_data_thread()
         
@@ -1022,6 +1023,22 @@ class FlightTrackerGUI(QMainWindow):
                 }}
             """)
         
+    def keyPressEvent(self, event):
+        """Handle keyboard shortcuts"""
+        if event.key() == Qt.Key_F11 or event.key() == Qt.Key_Escape:
+            self.toggle_fullscreen()
+        else:
+            super().keyPressEvent(event)
+    
+    def toggle_fullscreen(self):
+        """Toggle between fullscreen and windowed mode"""
+        if self.is_fullscreen:
+            self.showNormal()
+            self.is_fullscreen = False
+        else:
+            self.showFullScreen()
+            self.is_fullscreen = True
+    
     def closeEvent(self, event):
         """Handle application close"""
         if hasattr(self, 'data_thread'):
@@ -1039,7 +1056,15 @@ def main():
     
     # Create and show the main window
     window = FlightTrackerGUI()
-    window.show()
+    
+    # Check if running on Raspberry Pi and start fullscreen
+    import platform
+    if platform.system() == "Linux" and "arm" in platform.machine().lower():
+        # Running on Raspberry Pi - start fullscreen
+        window.showFullScreen()
+    else:
+        # Running on other systems - normal window
+        window.show()
     
     sys.exit(app.exec_())
 
