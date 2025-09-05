@@ -264,7 +264,7 @@ class FlightTrackerGUI(QMainWindow):
         super().__init__()
         self.gps_filter = GPSFilter(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, DEFAULT_RADIUS_KM)
         self.is_dark_mode = True  # Start with light mode
-        self.is_fullscreen = False  # Track fullscreen state
+        self.is_fullscreen = True  # Track fullscreen state
         self.init_ui()
         self.init_data_thread()
         
@@ -1047,6 +1047,16 @@ class FlightTrackerGUI(QMainWindow):
         event.accept()
 
 def main():
+    import argparse
+    
+    # Parse command line arguments
+    parser = argparse.ArgumentParser(description='PiScnr24 - Flight Tracker')
+    parser.add_argument('--fullscreen', '-f', action='store_true', 
+                       help='Force fullscreen mode')
+    parser.add_argument('--windowed', '-w', action='store_true', 
+                       help='Force windowed mode (overrides auto-detection)')
+    args = parser.parse_args()
+    
     app = QApplication(sys.argv)
     
     # Set application properties
@@ -1057,13 +1067,19 @@ def main():
     # Create and show the main window
     window = FlightTrackerGUI()
     
-    # Check if running on Raspberry Pi and start fullscreen
+    # Determine display mode
     import platform
-    if platform.system() == "Linux" and "arm" in platform.machine().lower():
-        # Running on Raspberry Pi - start fullscreen
+    is_raspberry_pi = platform.system() == "Linux" and "arm" in platform.machine().lower()
+    
+    if args.windowed:
+        # Force windowed mode
+        window.show()
+    elif args.fullscreen or is_raspberry_pi:
+        # Force fullscreen or auto-detect Raspberry Pi
         window.showFullScreen()
+        window.is_fullscreen = True
     else:
-        # Running on other systems - normal window
+        # Default windowed mode for other systems
         window.show()
     
     sys.exit(app.exec_())

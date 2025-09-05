@@ -53,8 +53,9 @@ A real-time flight tracking application that shows aircraft flying over your loc
    ```
 
    **Command Line Options:**
-   - `python piscnr24.py` - Normal mode (auto-detects Raspberry Pi)
+   - `python piscnr24.py` - Auto-detect mode (fullscreen on Raspberry Pi, windowed on others)
    - `python piscnr24.py --fullscreen` or `python piscnr24.py -f` - Force fullscreen mode
+   - `python piscnr24.py --windowed` or `python piscnr24.py -w` - Force windowed mode
 
 ### Auto-Start on Raspberry Pi Boot
 
