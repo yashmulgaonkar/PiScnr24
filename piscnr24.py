@@ -264,7 +264,7 @@ class FlightTrackerGUI(QMainWindow):
         super().__init__()
         self.gps_filter = GPSFilter(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, DEFAULT_RADIUS_KM)
         self.is_dark_mode = True  # Start with light mode
-        self.is_fullscreen = True  # Track fullscreen state
+        self.is_fullscreen = False  # Track fullscreen state
         self.init_ui()
         self.init_data_thread()
         

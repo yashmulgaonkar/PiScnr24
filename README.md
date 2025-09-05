@@ -52,6 +52,10 @@ A real-time flight tracking application that shows aircraft flying over your loc
    python piscnr24.py
    ```
 
+   **Command Line Options:**
+   - `python piscnr24.py` - Normal mode (auto-detects Raspberry Pi)
+   - `python piscnr24.py --fullscreen` or `python piscnr24.py -f` - Force fullscreen mode
+
 ### Auto-Start on Raspberry Pi Boot
 
 To automatically start PiScnr24 when your Raspberry Pi boots up:
@@ -72,7 +76,7 @@ To automatically start PiScnr24 when your Raspberry Pi boots up:
    Type=simple
    User=pi
    WorkingDirectory=/home/pi/PiScnr24
-   ExecStart=/home/pi/PiScnr24/.venv/bin/python /home/pi/PiScnr24/piscnr24.py
+   ExecStart=/home/pi/PiScnr24/.venv/bin/python /home/pi/PiScnr24/piscnr24.py --fullscreen
    Restart=always
    RestartSec=10
    Environment=DISPLAY=:0
