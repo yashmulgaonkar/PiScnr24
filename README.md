@@ -33,10 +33,14 @@ A real-time flight tracking application that shows aircraft flying over your loc
    ```bash
    git clone https://github.com/yashmulgaonkar/PiScnr24.git
    cd PiScnr24
+   python3 -m venv .venv --system-site-packages
+   source .venv/bin/activate
+   python -m pip install -U pip wheel
    ```
 
 2. **Install dependencies**
    ```bash
+   pip install --upgrade pip
    pip install -r requirements.txt
    ```
 
@@ -65,7 +69,7 @@ To automatically start PiScnr24 when your Raspberry Pi boots up:
    Type=simple
    User=pi
    WorkingDirectory=/home/pi/PiScnr24
-   ExecStart=/usr/bin/python3 /home/pi/PiScnr24/piscnr24.py
+   ExecStart=/home/pi/PiScnr24/.venv/bin/python /home/pi/PiScnr24/piscnr24.py
    Restart=always
    RestartSec=10
    Environment=DISPLAY=:0
