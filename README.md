@@ -76,11 +76,14 @@ To automatically start PiScnr24 when your Raspberry Pi boots up:
    [Service]
    Type=simple
    User=pi
+   Group=pi
    WorkingDirectory=/home/pi/PiScnr24
    ExecStart=/home/pi/PiScnr24/.venv/bin/python /home/pi/PiScnr24/piscnr24.py --fullscreen
    Restart=always
    RestartSec=10
    Environment=DISPLAY=:0
+   Environment=XDG_RUNTIME_DIR=/run/user/1000
+   Environment=HOME=/home/pi
 
    [Install]
    WantedBy=multi-user.target
@@ -102,6 +105,55 @@ To automatically start PiScnr24 when your Raspberry Pi boots up:
    ```bash
    sudo journalctl -u piscnr24.service -f
    ```
+
+### Service Troubleshooting
+
+**Common Issue: XDG_RUNTIME_DIR Error**
+
+If you see errors like `XDG_RUNTIME_DIR is invalid or not set`, the service needs proper environment variables for GUI applications.
+
+**Quick Fix Commands:**
+```bash
+# Stop the service first
+sudo systemctl stop piscnr24.service
+
+# Edit the service file
+sudo nano /etc/systemd/system/piscnr24.service
+
+# Make sure your service file includes these environment variables:
+# Environment=DISPLAY=:0
+# Environment=XDG_RUNTIME_DIR=/run/user/1000
+# Environment=HOME=/home/pi
+
+# Save and exit (Ctrl+X, Y, Enter)
+
+# Reload systemd and restart
+sudo systemctl daemon-reload
+sudo systemctl start piscnr24.service
+sudo systemctl status piscnr24.service
+```
+
+**Alternative: Use graphical-session.target (Recommended)**
+```ini
+[Unit]
+Description=PiScnr24 Flight Tracker
+After=graphical-session.target
+Wants=graphical-session.target
+
+[Service]
+Type=simple
+User=pi
+Group=pi
+WorkingDirectory=/home/pi/PiScnr24
+ExecStart=/home/pi/PiScnr24/.venv/bin/python /home/pi/PiScnr24/piscnr24.py --fullscreen
+Restart=always
+RestartSec=10
+Environment=DISPLAY=:0
+Environment=XDG_RUNTIME_DIR=/run/user/1000
+
+[Install]
+WantedBy=graphical-session.target
+```
 
 **Notes:**
 - Replace `/home/pi/PiScnr24` with your actual project path
