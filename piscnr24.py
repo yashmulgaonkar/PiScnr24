@@ -802,14 +802,12 @@ class FlightTrackerGUI(QMainWindow):
         
         footer_layout.addStretch()
         
-        # Center - IP Address
+        # Right corner - IP Address
         self.ip_address_label = QLabel(f"IP: {self.get_local_ip()}")
         self.ip_address_label.setStyleSheet("color: #7f8c8d; font-size: 9px; margin: 0px; padding: 2px; font-weight: bold;")
-        self.ip_address_label.setAlignment(Qt.AlignCenter)
+        self.ip_address_label.setAlignment(Qt.AlignRight)
         self.ip_address_label.setToolTip("Current local IP address of this device")
         footer_layout.addWidget(self.ip_address_label)
-        
-        footer_layout.addStretch()
                
         main_layout.addLayout(footer_layout)
         
