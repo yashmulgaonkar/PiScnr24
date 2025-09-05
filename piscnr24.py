@@ -766,8 +766,16 @@ class FlightTrackerGUI(QMainWindow):
         self.refresh_button.setStyleSheet("padding: 2px; font-size: 16px; font-weight: bold;")
         header_layout.addWidget(self.refresh_button)
         
+        # Compact Quit Button
+        self.quit_button = QPushButton("✕")
+        self.quit_button.clicked.connect(self.close_application)
+        self.quit_button.setFixedSize(30, 25)  # Small circular button
+        self.quit_button.setToolTip("Exit PiScnr24")
+        header_layout.addWidget(self.quit_button)
+        
         # Initialize theme button and apply theme
         self.update_theme_button()
+        self.update_quit_button()
         self.apply_theme()
         
         main_layout.addLayout(header_layout)
@@ -1441,6 +1449,58 @@ class FlightTrackerGUI(QMainWindow):
         else:
             self.showFullScreen()
             self.is_fullscreen = True
+    
+    def update_quit_button(self):
+        """Update the quit button styling based on current theme"""
+        if self.is_dark_mode:
+            self.quit_button.setStyleSheet("""
+                QPushButton {
+                    padding: 2px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #e74c3c;
+                    border: 1px solid #7f8c8d;
+                    border-radius: 12px;
+                    background-color: #34495e;
+                }
+                QPushButton:hover {
+                    background-color: #e74c3c;
+                    color: white;
+                    border-color: #e74c3c;
+                }
+                QPushButton:pressed {
+                    background-color: #c0392b;
+                }
+            """)
+        else:
+            self.quit_button.setStyleSheet("""
+                QPushButton {
+                    padding: 2px;
+                    font-size: 14px;
+                    font-weight: bold;
+                    color: #e74c3c;
+                    border: 1px solid #ddd;
+                    border-radius: 12px;
+                    background-color: #f8f9fa;
+                }
+                QPushButton:hover {
+                    background-color: #e74c3c;
+                    color: white;
+                    border-color: #e74c3c;
+                }
+                QPushButton:pressed {
+                    background-color: #c0392b;
+                }
+            """)
+    
+    def close_application(self):
+        """Close the application safely"""
+        # Stop the data thread if it exists
+        if hasattr(self, 'data_thread'):
+            self.data_thread.stop()
+            self.data_thread.wait()
+        # Close the main window
+        self.close()
     
     def closeEvent(self, event):
         """Handle application close"""
