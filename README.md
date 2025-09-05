@@ -98,6 +98,38 @@ To automatically start PiScnr24 when your Raspberry Pi boots up:
 - Make sure your Pi has a display connected for the GUI
 - The service starts after network connectivity is established
 
+### Touchscreen Setup (4inch HDMI Display-C)
+
+For touchscreen functionality with the 4inch HDMI Display-C from LCDwiki:
+
+1. **SSH into your Raspberry Pi**
+   ```bash
+   ssh pi@your-pi-ip-address
+   ```
+
+2. **Install touchscreen drivers**
+   ```bash
+   sudo rm -rf LCD-show
+   git clone https://github.com/goodtft/LCD-show.git
+   chmod -R 755 LCD-show
+   cd LCD-show/
+   sudo ./MPI4008-show
+   ```
+
+3. **Restart your Raspberry Pi**
+   ```bash
+   sudo reboot
+   ```
+   *Note: The Pi may restart automatically after driver installation*
+
+**Touchscreen Information:**
+- **Model**: 4inch HDMI Display-C
+- **Source**: https://www.lcdwiki.com/4inch_HDMI_Display-C
+- **Driver Repository**: https://github.com/goodtft/LCD-show.git
+- **Driver Command**: `sudo ./MPI4008-show`
+
+After installation, your touchscreen will be fully functional with PiScnr24!
+
 ## Requirements
 
 - **FlightRadarAPI** (1.4.0) - Flight data source
