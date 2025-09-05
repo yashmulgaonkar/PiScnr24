@@ -1,0 +1,4 @@
+FlightRadarAPI==1.4.0
+PyQt5==5.15.9
+requests==2.32.4
+urllib3==2.5.0
