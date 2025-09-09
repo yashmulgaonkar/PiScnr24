@@ -850,7 +850,7 @@ class FlightTrackerGUI(QMainWindow):
         card = QFrame()
         card.setFrameStyle(QFrame.Box)
         card.setObjectName("flightCard")
-        card.setMaximumHeight(120)  # Increased height for larger fonts
+        card.setMaximumHeight(135)  # Further increased height for even larger fonts
         
         # Compact main layout for the card
         main_layout = QHBoxLayout(card)
@@ -882,19 +882,19 @@ class FlightTrackerGUI(QMainWindow):
         # Large callsign for better readability
         callsign = flight.get('callsign', 'N/A')
         callsign_label = QLabel(callsign)
-        callsign_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 0px;")
+        callsign_label.setStyleSheet("font-size: 26px; font-weight: bold; margin: 0px;")
         info_layout.addWidget(callsign_label)
         
         # Large route (airport codes only)
         origin = flight.get('origin', 'N/A')
         destination = flight.get('destination', 'N/A')
         route_label = QLabel(f"{origin} → {destination}")
-        route_label.setStyleSheet("font-size: 18px; margin: 0px;")
+        route_label.setStyleSheet("font-size: 20px; margin: 0px;")
         info_layout.addWidget(route_label)
         
         # Larger aircraft type
         aircraft_label = QLabel(flight.get('plane', 'N/A'))
-        aircraft_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
+        aircraft_label.setStyleSheet("font-size: 18px; color: #666; margin: 0px;")
         info_layout.addWidget(aircraft_label)
         
         main_layout.addLayout(info_layout)
@@ -914,14 +914,14 @@ class FlightTrackerGUI(QMainWindow):
         altitude = flight.get('altitude', 0)
         altitude_text = f"{altitude:,}ft" if altitude else 'N/A'
         altitude_label = QLabel(altitude_text)
-        altitude_label.setStyleSheet("font-size: 18px; font-weight: bold; margin: 0px;")
+        altitude_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         left_data.addWidget(altitude_label)
         
         # Vertical Speed (larger)
         vspeed = flight.get('vertical_speed', 0)
         vspeed_text = f"{vspeed:,}fpm" if vspeed else 'N/A'
         vspeed_label = QLabel(vspeed_text)
-        vspeed_label.setStyleSheet("font-size: 14px; color: #666; margin: 0px;")
+        vspeed_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
         left_data.addWidget(vspeed_label)
         
         data_layout.addLayout(left_data)
@@ -939,14 +939,14 @@ class FlightTrackerGUI(QMainWindow):
         else:
             distance_text = 'N/A'
         distance_label = QLabel(distance_text)
-        distance_label.setStyleSheet("font-size: 18px; font-weight: bold; margin: 0px;")
+        distance_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         right_data.addWidget(distance_label)
         
         # Speed (larger)
         speed = flight.get('speed', 0)
         speed_text = f"{speed}kts" if speed else 'N/A'
         speed_label = QLabel(speed_text)
-        speed_label.setStyleSheet("font-size: 14px; color: #666; margin: 0px;")
+        speed_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
         right_data.addWidget(speed_label)
         
         data_layout.addLayout(right_data)
