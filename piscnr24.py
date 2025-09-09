@@ -1360,11 +1360,17 @@ class FlightTrackerGUI(QMainWindow):
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
+                QWidget#flightCard * {{
+                    border: none !important;
+                    background: transparent !important;
+                }}
                 QWidget#flightCard:hover {{
                     background-color: {theme['flight_card_hover']};
                 }}
                 QWidget#flightCard QLabel {{
                     color: {theme['flight_card_text']} !important;
+                    border: none !important;
+                    background: transparent !important;
                     margin: 0px;
                     padding: 0px;
                 }}
@@ -1499,11 +1505,17 @@ class FlightTrackerGUI(QMainWindow):
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
+                QWidget#flightCard * {{
+                    border: none !important;
+                    background: transparent !important;
+                }}
                 QWidget#flightCard:hover {{
                     background-color: {theme['flight_card_hover']};
                 }}
                 QWidget#flightCard QLabel {{
                     color: {theme['flight_card_text']} !important;
+                    border: none !important;
+                    background: transparent !important;
                     margin: 0px;
                     padding: 0px;
                 }}
