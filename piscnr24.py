@@ -893,7 +893,8 @@ class FlightTrackerGUI(QMainWindow):
         
         # Larger aircraft type
         aircraft_label = QLabel(flight.get('plane', 'N/A'))
-        aircraft_label.setStyleSheet("font-size: 18px; color: #666; margin: 0px;")
+        aircraft_label.setObjectName("secondaryText")
+        aircraft_label.setStyleSheet("font-size: 18px; margin: 0px;")
         info_layout.addWidget(aircraft_label)
         
         main_layout.addLayout(info_layout)
@@ -920,7 +921,8 @@ class FlightTrackerGUI(QMainWindow):
         vspeed = flight.get('vertical_speed', 0)
         vspeed_text = f"{vspeed:,}fpm" if vspeed else 'N/A'
         vspeed_label = QLabel(vspeed_text)
-        vspeed_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
+        vspeed_label.setObjectName("secondaryText")
+        vspeed_label.setStyleSheet("font-size: 16px; margin: 0px;")
         left_data.addWidget(vspeed_label)
         
         data_layout.addLayout(left_data)
@@ -945,7 +947,8 @@ class FlightTrackerGUI(QMainWindow):
         speed = flight.get('speed', 0)
         speed_text = f"{speed}kts" if speed else 'N/A'
         speed_label = QLabel(speed_text)
-        speed_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
+        speed_label.setObjectName("secondaryText")
+        speed_label.setStyleSheet("font-size: 16px; margin: 0px;")
         right_data.addWidget(speed_label)
         
         data_layout.addLayout(right_data)
@@ -1374,6 +1377,13 @@ class FlightTrackerGUI(QMainWindow):
                     margin: 0px;
                     padding: 0px;
                 }}
+                QWidget#flightCard QLabel#secondaryText {{
+                    color: {theme['text_secondary']} !important;
+                    border: none !important;
+                    background: transparent !important;
+                    margin: 0px;
+                    padding: 0px;
+                }}
                 QScrollArea {{
                     background-color: {theme['scroll_area']};
                     border: none;
@@ -1514,6 +1524,13 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QWidget#flightCard QLabel {{
                     color: {theme['flight_card_text']} !important;
+                    border: none !important;
+                    background: transparent !important;
+                    margin: 0px;
+                    padding: 0px;
+                }}
+                QWidget#flightCard QLabel#secondaryText {{
+                    color: {theme['text_secondary']} !important;
                     border: none !important;
                     background: transparent !important;
                     margin: 0px;
