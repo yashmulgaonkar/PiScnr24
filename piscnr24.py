@@ -859,7 +859,7 @@ class FlightTrackerGUI(QMainWindow):
         """Create a compact card for a single flight optimized for small screens"""
         card = QWidget()
         card.setObjectName("flightCard")
-        card.setMaximumHeight(135)  # Further increased height for even larger fonts
+        card.setMaximumHeight(145)  # Increased height for larger logos and fonts
         
         # Compact main layout for the card
         main_layout = QHBoxLayout(card)
@@ -879,7 +879,7 @@ class FlightTrackerGUI(QMainWindow):
         else:
             logo_widget.setText("N/A")
             logo_widget.setObjectName("logoWidget")
-            logo_widget.setFixedSize(40, 25)  # Smaller default logo
+            logo_widget.setFixedSize(80, 50)  # Larger default logo
         
         main_layout.addWidget(logo_widget)
         
@@ -1052,7 +1052,7 @@ class FlightTrackerGUI(QMainWindow):
                     if not pixmap.isNull():
                         # Scale pixmap to reasonable size while maintaining aspect ratio
                         # Maximum height of 120px, width scales proportionally
-                        scaled_pixmap = pixmap.scaled(350, 350, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        scaled_pixmap = pixmap.scaled(300, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         logo_widget.setPixmap(scaled_pixmap)
                         logo_height = scaled_pixmap.height()
                         # Set widget size to match scaled pixmap with generous padding
@@ -1094,29 +1094,29 @@ class FlightTrackerGUI(QMainWindow):
                 if os.path.exists(logo_path):
                     pixmap = QPixmap(logo_path)
                     if not pixmap.isNull():
-                        # Compact logo size for flight cards
-                        scaled_pixmap = pixmap.scaled(65, 35, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        # Larger logo size for flight cards
+                        scaled_pixmap = pixmap.scaled(90, 55, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         logo_widget.setPixmap(scaled_pixmap)
                         logo_height = scaled_pixmap.height()
-                        # Set compact widget size
-                        logo_widget.setFixedSize(65, 35)
+                        # Set larger widget size
+                        logo_widget.setFixedSize(90, 55)
                         logo_widget.setStyleSheet("background-color: transparent; border: none;")
                     else:
                         logo_widget.setText("N/A")
-                        logo_height = 15
-                        logo_widget.setFixedSize(55, 35)
+                        logo_height = 20
+                        logo_widget.setFixedSize(75, 55)
                 else:
                     logo_widget.setText("N/A")
-                    logo_height = 15
-                    logo_widget.setFixedSize(55, 35)
+                    logo_height = 20
+                    logo_widget.setFixedSize(75, 55)
             except Exception as e:
                 logo_widget.setText("N/A")
-                logo_height = 15
-                logo_widget.setFixedSize(55, 35)
+                logo_height = 20
+                logo_widget.setFixedSize(75, 55)
         else:
             logo_widget.setText("N/A")
-            logo_height = 15
-            logo_widget.setFixedSize(55, 35)
+            logo_height = 20
+            logo_widget.setFixedSize(75, 55)
         
         return logo_widget, logo_height
     
@@ -1357,7 +1357,8 @@ class FlightTrackerGUI(QMainWindow):
                 QLabel#logoWidget {{
                     background-color: transparent !important;
                     color: {theme['logo_text']};
-                    font-size: 14px;
+                    font-size: 16px;
+                    font-weight: bold;
                     border: none !important;
                 }}
                 QFrame {{
@@ -1509,7 +1510,8 @@ class FlightTrackerGUI(QMainWindow):
                 QLabel#logoWidget {{
                     background-color: transparent !important;
                     color: {theme['logo_text']};
-                    font-size: 14px;
+                    font-size: 16px;
+                    font-weight: bold;
                     border: none !important;
                 }}
                 QFrame {{
