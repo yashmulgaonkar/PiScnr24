@@ -136,6 +136,7 @@ class Overhead:
                                 "callsign": callsign,
                                 "latitude": flight.latitude,
                                 "longitude": flight.longitude,
+                                "ground_speed": flight.ground_speed,
                             }
                         )
                         break
