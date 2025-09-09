@@ -729,20 +729,20 @@ class FlightTrackerGUI(QMainWindow):
         header_layout.addStretch()
         
         # Compact GPS Settings Button
-        self.gps_button = QPushButton("📍 GPS")
+        self.gps_button = QPushButton("SET HOME")
         self.gps_button.clicked.connect(self.open_gps_settings)
-        self.gps_button.setStyleSheet("padding: 4px 8px; min-width: 60px; font-size: 12px;")
+        self.gps_button.setStyleSheet("padding: 4px 8px; min-width: 80px; font-size: 12px;")
         header_layout.addWidget(self.gps_button)
         
         # Store altitude filter value
         self.altitude_filter_feet = 100  # Default 100 feet
         
         # Compact Theme Toggle Button
-        self.theme_button = QPushButton("☀️")
-        self.theme_button.setFixedSize(30, 25)  # Smaller than before
+        self.theme_button = QPushButton("LIGHT")
+        self.theme_button.setFixedSize(50, 25)  # Wider for text labels
         self.theme_button.setStyleSheet("""
             QPushButton {
-                font-size: 14px;
+                font-size: 9px;
                 border: 1px solid #ddd;
                 border-radius: 12px;
                 background-color: #f8f9fa;
@@ -1172,10 +1172,10 @@ class FlightTrackerGUI(QMainWindow):
     def update_theme_button(self):
         """Update the compact theme button icon and styling"""
         if self.is_dark_mode:
-            self.theme_button.setText("🌙")
+            self.theme_button.setText("DARK")
             self.theme_button.setStyleSheet("""
                 QPushButton {
-                    font-size: 14px;
+                    font-size: 9px;
                     border: 1px solid #7f8c8d;
                     border-radius: 12px;
                     background-color: #34495e;
@@ -1191,10 +1191,10 @@ class FlightTrackerGUI(QMainWindow):
                 }
             """)
         else:
-            self.theme_button.setText("☀️")
+            self.theme_button.setText("LIGHT")
             self.theme_button.setStyleSheet("""
                 QPushButton {
-                    font-size: 14px;
+                    font-size: 9px;
                     border: 1px solid #ddd;
                     border-radius: 12px;
                     background-color: #f8f9fa;
