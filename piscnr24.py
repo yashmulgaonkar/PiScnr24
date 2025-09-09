@@ -1052,7 +1052,7 @@ class FlightTrackerGUI(QMainWindow):
                     if not pixmap.isNull():
                         # Scale pixmap to reasonable size while maintaining aspect ratio
                         # Maximum height of 120px, width scales proportionally
-                        scaled_pixmap = pixmap.scaled(300, 150, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        scaled_pixmap = pixmap.scaled(300, 200, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         logo_widget.setPixmap(scaled_pixmap)
                         logo_height = scaled_pixmap.height()
                         # Set widget size to match scaled pixmap with generous padding
