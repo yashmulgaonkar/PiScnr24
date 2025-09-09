@@ -836,8 +836,8 @@ class FlightTrackerGUI(QMainWindow):
         scroll_area = QScrollArea()
         scroll_area.setObjectName("flightScrollArea")  # Set object name for theme targeting
         scroll_area.setWidgetResizable(True)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # Always show vertical scroll bar
-        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)  # Auto-hide vertical scroll bar
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)  # Auto-hide horizontal scroll bar
         scroll_area.setFrameStyle(QScrollArea.NoFrame)  # Remove frame for more space
         
         # Create container widget for cards
@@ -1000,10 +1000,12 @@ class FlightTrackerGUI(QMainWindow):
             color: {status_color}; 
             background-color: {bg_color}; 
             border-radius: 8px; 
-            padding: 4px 8px; 
+            padding: 3px 6px; 
             margin: 2px 0px;
             text-align: center;
             qproperty-alignment: 'AlignCenter';
+            max-width: 90px;
+            min-width: 70px;
         """)
         status_label.setObjectName("statusLabel")
         
