@@ -992,11 +992,10 @@ class FlightTrackerGUI(QMainWindow):
         """)
         status_label.setObjectName("statusLabel")
         
-        # Create a horizontal layout for the status to center it
+        # Create a horizontal layout for the status to align it to the right
         status_layout = QHBoxLayout()
-        status_layout.addStretch()
+        status_layout.addStretch()  # Push status to the right
         status_layout.addWidget(status_label)
-        status_layout.addStretch()
         
         main_layout.addLayout(status_layout)
         
