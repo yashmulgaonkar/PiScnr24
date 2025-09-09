@@ -943,8 +943,8 @@ class FlightTrackerGUI(QMainWindow):
         distance_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         right_data.addWidget(distance_label)
         
-        # Speed (larger)
-        speed = flight.get('speed', 0)
+        # Ground Speed (larger)
+        speed = flight.get('ground_speed', 0)
         speed_text = f"Speed: {speed}kts" if speed else 'Speed: N/A'
         speed_label = QLabel(speed_text)
         speed_label.setObjectName("secondaryText")
