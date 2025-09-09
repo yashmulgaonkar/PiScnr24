@@ -176,13 +176,13 @@ class Overhead:
                         )
 
                         # DEBUG: Print available fields to understand API response structure (after callsign is defined)
-                        # Enable debug for specific flights
-                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                            print(f"🔍 Flight {callsign} - Available keys: {list(details.keys()) if details else 'None'}")
-                            if 'time' in details:
-                                print(f"⏰ Time data for {callsign}: {details['time']}")
-                            if 'status' in details:
-                                print(f"📊 Status data for {callsign}: {details['status']}")
+                        # Uncomment these lines if you need to debug specific flights:
+                        # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                        #     print(f"🔍 Flight {callsign} - Available keys: {list(details.keys()) if details else 'None'}")
+                        #     if 'time' in details:
+                        #         print(f"⏰ Time data for {callsign}: {details['time']}")
+                        #     if 'status' in details:
+                        #         print(f"📊 Status data for {callsign}: {details['status']}")
 
                         # Extract timing and status information for on-time indicator
                         flight_status = ""
@@ -209,9 +209,9 @@ class Overhead:
                                 elif 'other' in time_data and 'eta' in time_data['other'] and time_data['other']['eta']:
                                     estimated_arrival = time_data['other']['eta']
                                 
-                                if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                                    print(f"🕒 Flight {callsign} scheduled arrival: {scheduled_arrival}")
-                                    print(f"🕒 Flight {callsign} estimated arrival: {estimated_arrival}")
+                                # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                #     print(f"🕒 Flight {callsign} scheduled arrival: {scheduled_arrival}")
+                                #     print(f"🕒 Flight {callsign} estimated arrival: {estimated_arrival}")
                                 
                                 # Calculate delay based on arrival times
                                 if scheduled_arrival and estimated_arrival:
@@ -219,8 +219,8 @@ class Overhead:
                                         delay_seconds = estimated_arrival - scheduled_arrival
                                         delay_minutes = int(delay_seconds / 60)
                                         
-                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                                            print(f"⏱️  Flight {callsign} calculated delay: {delay_minutes} minutes")
+                                        # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                        #     print(f"⏱️  Flight {callsign} calculated delay: {delay_minutes} minutes")
                                         
                                         # Determine status based on delay
                                         if delay_minutes <= -5:  # More than 5 minutes early
@@ -238,16 +238,16 @@ class Overhead:
                                                 on_time_status = f"Delayed {hours}h"
                                                 
                                     except (ValueError, TypeError) as e:
-                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                                            print(f"❌ Error calculating arrival delay for {callsign}: {e}")
+                                        # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                        #     print(f"❌ Error calculating arrival delay for {callsign}: {e}")
                                         on_time_status = "Unknown"
                                 else:
                                     # Fallback: Try to use status text if timing calculation fails
                                     if 'status' in details and 'text' in details['status']:
                                         flight_status = details['status']['text']
                                         status_lower = flight_status.lower()
-                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                                            print(f"🏷️  Flight {callsign} fallback to status text: '{flight_status}'")
+                                        # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                        #     print(f"🏷️  Flight {callsign} fallback to status text: '{flight_status}'")
                                         
                                         if 'cancelled' in status_lower or 'canceled' in status_lower:
                                             on_time_status = "Cancelled"
@@ -264,8 +264,8 @@ class Overhead:
                             # print(f"❌ Error processing status for {callsign}: {e}")
                             on_time_status = "Unknown"
 
-                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
-                            print(f"✅ Final status for {callsign}: '{on_time_status}'")
+                        # if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                        #     print(f"✅ Final status for {callsign}: '{on_time_status}'")
                         data.append(
                             {
                                 "plane": plane,

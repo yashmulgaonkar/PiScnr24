@@ -783,6 +783,29 @@ class FlightTrackerGUI(QMainWindow):
         self.quit_button.setToolTip("Exit PiScnr24")
         header_layout.addWidget(self.quit_button)
         
+        # YM Logo (to the right of exit button)
+        ym_logo_label = QLabel()
+        ym_logo_path = os.path.join("assets", "YM_logo_white.png")
+        if os.path.exists(ym_logo_path):
+            pixmap = QPixmap(ym_logo_path)
+            if not pixmap.isNull():
+                # Scale logo to match header height (similar to quit button)
+                scaled_pixmap = pixmap.scaled(25, 25, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                ym_logo_label.setPixmap(scaled_pixmap)
+            else:
+                # Fallback text if image fails to load
+                ym_logo_label.setText("YM")
+                ym_logo_label.setFont(QFont("Arial", 8, QFont.Bold))
+        else:
+            # Fallback text if file doesn't exist
+            ym_logo_label.setText("YM")
+            ym_logo_label.setFont(QFont("Arial", 8, QFont.Bold))
+        
+        ym_logo_label.setStyleSheet("background-color: transparent; border: none; margin: 2px;")
+        ym_logo_label.setAlignment(Qt.AlignCenter)
+        ym_logo_label.setFixedSize(30, 25)  # Match quit button size
+        header_layout.addWidget(ym_logo_label)
+        
         # Initialize theme button and apply theme
         self.update_theme_button()
         self.update_quit_button()
