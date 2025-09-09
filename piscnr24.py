@@ -842,7 +842,7 @@ class FlightTrackerGUI(QMainWindow):
         card = QFrame()
         card.setFrameStyle(QFrame.Box)
         card.setObjectName("flightCard")
-        card.setMaximumHeight(55)  # Force compact height
+        card.setMaximumHeight(70)  # Force compact height
         
         # Compact main layout for the card
         main_layout = QHBoxLayout(card)
@@ -874,19 +874,19 @@ class FlightTrackerGUI(QMainWindow):
         # Compact callsign (no airline name to save space)
         callsign = flight.get('callsign', 'N/A')
         callsign_label = QLabel(callsign)
-        callsign_label.setStyleSheet("font-size: 13px; font-weight: bold; margin: 0px;")
+        callsign_label.setStyleSheet("font-size: 16px; font-weight: bold; margin: 0px;")
         info_layout.addWidget(callsign_label)
         
         # Compact route (airport codes only)
         origin = flight.get('origin', 'N/A')
         destination = flight.get('destination', 'N/A')
         route_label = QLabel(f"{origin} → {destination}")
-        route_label.setStyleSheet("font-size: 10px; margin: 0px;")
+        route_label.setStyleSheet("font-size: 13px; margin: 0px;")
         info_layout.addWidget(route_label)
         
         # Compact aircraft type
         aircraft_label = QLabel(flight.get('plane', 'N/A'))
-        aircraft_label.setStyleSheet("font-size: 9px; color: #666; margin: 0px;")
+        aircraft_label.setStyleSheet("font-size: 11px; color: #666; margin: 0px;")
         info_layout.addWidget(aircraft_label)
         
         main_layout.addLayout(info_layout)
@@ -906,14 +906,14 @@ class FlightTrackerGUI(QMainWindow):
         altitude = flight.get('altitude', 0)
         altitude_text = f"{altitude:,}ft" if altitude else 'N/A'
         altitude_label = QLabel(altitude_text)
-        altitude_label.setStyleSheet("font-size: 9px; font-weight: bold; margin: 0px;")
+        altitude_label.setStyleSheet("font-size: 12px; font-weight: bold; margin: 0px;")
         left_data.addWidget(altitude_label)
         
         # Vertical Speed (compact)
         vspeed = flight.get('vertical_speed', 0)
         vspeed_text = f"{vspeed:,}fpm" if vspeed else 'N/A'
         vspeed_label = QLabel(vspeed_text)
-        vspeed_label.setStyleSheet("font-size: 8px; color: #666; margin: 0px;")
+        vspeed_label.setStyleSheet("font-size: 10px; color: #666; margin: 0px;")
         left_data.addWidget(vspeed_label)
         
         data_layout.addLayout(left_data)
@@ -931,14 +931,14 @@ class FlightTrackerGUI(QMainWindow):
         else:
             distance_text = 'N/A'
         distance_label = QLabel(distance_text)
-        distance_label.setStyleSheet("font-size: 9px; font-weight: bold; margin: 0px;")
+        distance_label.setStyleSheet("font-size: 12px; font-weight: bold; margin: 0px;")
         right_data.addWidget(distance_label)
         
         # Speed (if available)
         speed = flight.get('speed', 0)
         speed_text = f"{speed}kts" if speed else 'N/A'
         speed_label = QLabel(speed_text)
-        speed_label.setStyleSheet("font-size: 8px; color: #666; margin: 0px;")
+        speed_label.setStyleSheet("font-size: 10px; color: #666; margin: 0px;")
         right_data.addWidget(speed_label)
         
         data_layout.addLayout(right_data)
@@ -1030,8 +1030,8 @@ class FlightTrackerGUI(QMainWindow):
                     pixmap = QPixmap(logo_path)
                     if not pixmap.isNull():
                         # Scale pixmap to reasonable size while maintaining aspect ratio
-                        # Maximum height of 100px, width scales proportionally
-                        scaled_pixmap = pixmap.scaled(250, 100, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        # Maximum height of 120px, width scales proportionally
+                        scaled_pixmap = pixmap.scaled(300, 120, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         logo_widget.setPixmap(scaled_pixmap)
                         logo_height = scaled_pixmap.height()
                         # Set widget size to match scaled pixmap with generous padding
@@ -1074,28 +1074,28 @@ class FlightTrackerGUI(QMainWindow):
                     pixmap = QPixmap(logo_path)
                     if not pixmap.isNull():
                         # Compact logo size for flight cards
-                        scaled_pixmap = pixmap.scaled(50, 25, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                        scaled_pixmap = pixmap.scaled(65, 35, Qt.KeepAspectRatio, Qt.SmoothTransformation)
                         logo_widget.setPixmap(scaled_pixmap)
                         logo_height = scaled_pixmap.height()
                         # Set compact widget size
-                        logo_widget.setFixedSize(50, 25)
+                        logo_widget.setFixedSize(65, 35)
                         logo_widget.setStyleSheet("background-color: transparent; border: none;")
                     else:
                         logo_widget.setText("N/A")
                         logo_height = 15
-                        logo_widget.setFixedSize(40, 25)
+                        logo_widget.setFixedSize(55, 35)
                 else:
                     logo_widget.setText("N/A")
                     logo_height = 15
-                    logo_widget.setFixedSize(40, 25)
+                    logo_widget.setFixedSize(55, 35)
             except Exception as e:
                 logo_widget.setText("N/A")
                 logo_height = 15
-                logo_widget.setFixedSize(40, 25)
+                logo_widget.setFixedSize(55, 35)
         else:
             logo_widget.setText("N/A")
             logo_height = 15
-            logo_widget.setFixedSize(40, 25)
+            logo_widget.setFixedSize(55, 35)
         
         return logo_widget, logo_height
     
@@ -1273,7 +1273,7 @@ class FlightTrackerGUI(QMainWindow):
                 QLabel#logoWidget {{
                     background-color: transparent !important;
                     color: {theme['logo_text']};
-                    font-size: 10px;
+                    font-size: 14px;
                     border: none !important;
                 }}
                 QFrame {{
@@ -1373,7 +1373,7 @@ class FlightTrackerGUI(QMainWindow):
                 QLabel#logoWidget {{
                     background-color: transparent !important;
                     color: {theme['logo_text']};
-                    font-size: 10px;
+                    font-size: 14px;
                     border: none !important;
                 }}
                 QFrame {{
