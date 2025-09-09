@@ -17,8 +17,8 @@ from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QTextEdit, QFrame, QHeaderView, 
                              QSpinBox, QDoubleSpinBox, QDialog,
                              QScrollArea)
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QTimer
+from PyQt5.QtGui import QFont, QPixmap, QCursor
 from utilities.overhead import Overhead
 from utilities.lookup import get_airport_name, get_airline_name
 import time
@@ -598,8 +598,18 @@ class FlightTrackerGUI(QMainWindow):
         self.gps_filter = GPSFilter(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, DEFAULT_RADIUS_KM)
         self.is_dark_mode = True  # Start with dark mode
         self.is_fullscreen = True  # Track fullscreen state
+        
+        # Cursor hiding setup
+        self.cursor_timer = QTimer()
+        self.cursor_timer.timeout.connect(self.hide_cursor)
+        self.cursor_timer.setSingleShot(True)
+        self.cursor_hidden = False
+        
         self.init_ui()
         self.init_data_thread()
+        
+        # Start cursor hiding timer after UI is initialized
+        self.cursor_timer.start(3000)  # Hide cursor after 3 seconds
         
         # Show initial GPS filter settings
         # Initialize footer
@@ -960,6 +970,8 @@ class FlightTrackerGUI(QMainWindow):
     
     def on_card_clicked(self, flight):
         """Handle flight card click"""
+        # Show cursor when interacting with UI
+        self.show_cursor()
         # Show raw data popup
         popup = RawDataPopup(flight, self)
         popup.exec_()
@@ -1110,6 +1122,8 @@ class FlightTrackerGUI(QMainWindow):
     
     def open_gps_settings(self):
         """Open GPS settings popup"""
+        # Show cursor when interacting with UI
+        self.show_cursor()
         popup = GPSCoordinatesPopup(self.gps_filter, self)
         popup.altitude_filter_input.setValue(self.altitude_filter_feet)  # Set current altitude filter
         
@@ -1158,6 +1172,8 @@ class FlightTrackerGUI(QMainWindow):
         
     def manual_refresh(self):
         """Manually trigger a data refresh"""
+        # Show cursor when interacting with UI
+        self.show_cursor()
         self.last_update_label.setText("Last update: Manual refresh requested...")
         # Refresh IP address as well in case network configuration has changed
         self.refresh_ip_address()
@@ -1165,6 +1181,8 @@ class FlightTrackerGUI(QMainWindow):
         
     def toggle_theme_button(self):
         """Toggle between light and dark mode using button"""
+        # Show cursor when interacting with UI
+        self.show_cursor()
         self.is_dark_mode = not self.is_dark_mode
         self.update_theme_button()
         self.apply_theme()
@@ -1664,8 +1682,28 @@ class FlightTrackerGUI(QMainWindow):
                 }
             """)
     
+    def hide_cursor(self):
+        """Hide the mouse cursor after inactivity"""
+        self.setCursor(QCursor(Qt.BlankCursor))
+        self.cursor_hidden = True
+    
+    def show_cursor(self):
+        """Show the mouse cursor and restart the hide timer"""
+        if self.cursor_hidden:
+            self.setCursor(QCursor(Qt.ArrowCursor))
+            self.cursor_hidden = False
+        # Restart timer for next hide
+        self.cursor_timer.start(3000)  # 3 seconds
+    
+    def mouseMoveEvent(self, event):
+        """Override to detect mouse movement and show cursor"""
+        self.show_cursor()
+        super().mouseMoveEvent(event)
+    
     def close_application(self):
         """Close the application safely"""
+        # Show cursor when interacting with UI
+        self.show_cursor()
         # Stop the data thread if it exists
         if hasattr(self, 'data_thread'):
             self.data_thread.stop()
