@@ -912,14 +912,14 @@ class FlightTrackerGUI(QMainWindow):
         
         # Altitude (large)
         altitude = flight.get('altitude', 0)
-        altitude_text = f"{altitude:,}ft" if altitude else 'N/A'
+        altitude_text = f"Alt: {altitude:,}ft" if altitude else 'Alt: N/A'
         altitude_label = QLabel(altitude_text)
         altitude_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         left_data.addWidget(altitude_label)
         
         # Vertical Speed (larger)
         vspeed = flight.get('vertical_speed', 0)
-        vspeed_text = f"{vspeed:,}fpm" if vspeed else 'N/A'
+        vspeed_text = f"V/S: {vspeed:,}fpm" if vspeed else 'V/S: N/A'
         vspeed_label = QLabel(vspeed_text)
         vspeed_label.setObjectName("secondaryText")
         vspeed_label.setStyleSheet("font-size: 16px; margin: 0px;")
@@ -936,16 +936,16 @@ class FlightTrackerGUI(QMainWindow):
         distance = self.calculate_distance(flight)
         if distance:
             distance_miles = distance * 0.621371
-            distance_text = f"{distance_miles:.1f}mi"
+            distance_text = f"Dist: {distance_miles:.1f}mi"
         else:
-            distance_text = 'N/A'
+            distance_text = 'Dist: N/A'
         distance_label = QLabel(distance_text)
         distance_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         right_data.addWidget(distance_label)
         
         # Speed (larger)
         speed = flight.get('speed', 0)
-        speed_text = f"{speed}kts" if speed else 'N/A'
+        speed_text = f"Speed: {speed}kts" if speed else 'Speed: N/A'
         speed_label = QLabel(speed_text)
         speed_label.setObjectName("secondaryText")
         speed_label.setStyleSheet("font-size: 16px; margin: 0px;")
