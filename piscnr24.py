@@ -894,7 +894,7 @@ class FlightTrackerGUI(QMainWindow):
         # Larger aircraft type
         aircraft_label = QLabel(flight.get('plane', 'N/A'))
         aircraft_label.setObjectName("secondaryText")
-        aircraft_label.setStyleSheet("font-size: 18px; margin: 0px;")
+        aircraft_label.setStyleSheet("font-size: 20px; margin: 0px;")
         info_layout.addWidget(aircraft_label)
         
         main_layout.addLayout(info_layout)
@@ -921,8 +921,7 @@ class FlightTrackerGUI(QMainWindow):
         vspeed = flight.get('vertical_speed', 0)
         vspeed_text = f"V/S: {vspeed:,}fpm" if vspeed else 'V/S: N/A'
         vspeed_label = QLabel(vspeed_text)
-        vspeed_label.setObjectName("secondaryText")
-        vspeed_label.setStyleSheet("font-size: 16px; margin: 0px;")
+        vspeed_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         left_data.addWidget(vspeed_label)
         
         data_layout.addLayout(left_data)
@@ -947,8 +946,7 @@ class FlightTrackerGUI(QMainWindow):
         ground_speed = flight.get('ground_speed', 0)
         speed_text = f"GS: {ground_speed}kts" if ground_speed else 'GS: N/A'
         speed_label = QLabel(speed_text)
-        speed_label.setObjectName("secondaryText")
-        speed_label.setStyleSheet("font-size: 16px; margin: 0px;")
+        speed_label.setStyleSheet("font-size: 20px; font-weight: bold; margin: 0px;")
         right_data.addWidget(speed_label)
         
         data_layout.addLayout(right_data)
