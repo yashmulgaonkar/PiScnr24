@@ -964,8 +964,21 @@ class FlightTrackerGUI(QMainWindow):
         
         # On-Time Status indicator (now at the far right)
         on_time_status = flight.get('on_time_status', 'Unknown')
-        status_label = QLabel(on_time_status)
-        status_label.setAlignment(Qt.AlignCenter)
+        
+        # For delayed flights, move the time to a new row
+        if "Delayed" in on_time_status and on_time_status != "Delayed":
+            # Split "Delayed 25m" into "Delayed\n25m"
+            parts = on_time_status.split(" ", 1)  # Split on first space only
+            if len(parts) == 2:
+                status_text = f"{parts[0]}\n{parts[1]}"
+            else:
+                status_text = on_time_status
+        else:
+            status_text = on_time_status
+            
+        status_label = QLabel(status_text)
+        status_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)
+        status_label.setWordWrap(True)  # Allow text wrapping for multi-line display
         
         # Style the status label with color coding
         if on_time_status == "On Time":
@@ -989,6 +1002,8 @@ class FlightTrackerGUI(QMainWindow):
             border-radius: 8px; 
             padding: 4px 8px; 
             margin: 2px 0px;
+            text-align: center;
+            qproperty-alignment: 'AlignCenter';
         """)
         status_label.setObjectName("statusLabel")
         
