@@ -964,7 +964,7 @@ class FlightTrackerGUI(QMainWindow):
         
         # Add On-Time Status indicator at the bottom of the card
         on_time_status = flight.get('on_time_status', 'Unknown')
-        status_label = QLabel(f"Status: {on_time_status}")
+        status_label = QLabel(on_time_status)
         status_label.setAlignment(Qt.AlignCenter)
         
         # Style the status label with color coding
