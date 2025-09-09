@@ -909,7 +909,7 @@ class FlightTrackerGUI(QMainWindow):
         
         main_layout.addLayout(info_layout)
         
-        # Right side - Compact Flight data in two columns
+        # Flight data in two columns (positioned before status)
         data_widget = QWidget()
         data_layout = QHBoxLayout(data_widget)
         data_layout.setSpacing(8)
@@ -962,7 +962,7 @@ class FlightTrackerGUI(QMainWindow):
         data_layout.addLayout(right_data)
         main_layout.addWidget(data_widget)
         
-        # Add On-Time Status indicator at the bottom of the card
+        # On-Time Status indicator (now at the far right)
         on_time_status = flight.get('on_time_status', 'Unknown')
         status_label = QLabel(on_time_status)
         status_label.setAlignment(Qt.AlignCenter)
@@ -992,12 +992,8 @@ class FlightTrackerGUI(QMainWindow):
         """)
         status_label.setObjectName("statusLabel")
         
-        # Create a horizontal layout for the status to align it to the right
-        status_layout = QHBoxLayout()
-        status_layout.addStretch()  # Push status to the right
-        status_layout.addWidget(status_label)
-        
-        main_layout.addLayout(status_layout)
+        # Add status to the main horizontal layout (at the far right)
+        main_layout.addWidget(status_label)
         
         # Make card clickable
         card.mousePressEvent = lambda event: self.on_card_clicked(flight)
