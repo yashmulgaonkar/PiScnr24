@@ -596,7 +596,7 @@ class FlightTrackerGUI(QMainWindow):
     def __init__(self):
         super().__init__()
         self.gps_filter = GPSFilter(DEFAULT_LATITUDE, DEFAULT_LONGITUDE, DEFAULT_RADIUS_KM)
-        self.is_dark_mode = True  # Start with light mode
+        self.is_dark_mode = True  # Start with dark mode
         self.is_fullscreen = True  # Track fullscreen state
         self.init_ui()
         self.init_data_thread()
@@ -790,6 +790,10 @@ class FlightTrackerGUI(QMainWindow):
         main_panel = self.create_combined_flight_panel()
         main_layout.addWidget(main_panel, 1)  # Give maximum stretch factor
         
+        # Apply theme to scroll area after it's created
+        if hasattr(self, 'flight_scroll_area'):
+            self.refresh_scroll_area_theme()
+        
         # Compact Footer
         footer_layout = QHBoxLayout()
         footer_layout.setContentsMargins(5, 2, 5, 2)  # Minimal footer margins
@@ -818,10 +822,11 @@ class FlightTrackerGUI(QMainWindow):
         layout.setContentsMargins(3, 15, 3, 3)  # Minimal margins, space for title
         layout.setSpacing(0)  # No spacing between elements
         
-        # Create maximized scroll area for flight cards
+        # Create maximized scroll area for flight cards with enhanced scrolling
         scroll_area = QScrollArea()
+        scroll_area.setObjectName("flightScrollArea")  # Set object name for theme targeting
         scroll_area.setWidgetResizable(True)
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOn)  # Always show vertical scroll bar
         scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         scroll_area.setFrameStyle(QScrollArea.NoFrame)  # Remove frame for more space
         
@@ -835,6 +840,9 @@ class FlightTrackerGUI(QMainWindow):
         scroll_area.setWidget(self.cards_container)
         layout.addWidget(scroll_area)
         
+        # Store reference to scroll area for theme updates
+        self.flight_scroll_area = scroll_area
+        
         return group_box
     
     def create_flight_card(self, flight):
@@ -842,7 +850,7 @@ class FlightTrackerGUI(QMainWindow):
         card = QFrame()
         card.setFrameStyle(QFrame.Box)
         card.setObjectName("flightCard")
-        card.setMaximumHeight(70)  # Force compact height
+        card.setMaximumHeight(120)  # Increased height for larger fonts
         
         # Compact main layout for the card
         main_layout = QHBoxLayout(card)
@@ -871,22 +879,22 @@ class FlightTrackerGUI(QMainWindow):
         info_layout.setSpacing(1)  # Minimal spacing
         info_layout.setContentsMargins(0, 0, 0, 0)
         
-        # Compact callsign (no airline name to save space)
+        # Large callsign for better readability
         callsign = flight.get('callsign', 'N/A')
         callsign_label = QLabel(callsign)
-        callsign_label.setStyleSheet("font-size: 16px; font-weight: bold; margin: 0px;")
+        callsign_label.setStyleSheet("font-size: 24px; font-weight: bold; margin: 0px;")
         info_layout.addWidget(callsign_label)
         
-        # Compact route (airport codes only)
+        # Large route (airport codes only)
         origin = flight.get('origin', 'N/A')
         destination = flight.get('destination', 'N/A')
         route_label = QLabel(f"{origin} → {destination}")
-        route_label.setStyleSheet("font-size: 13px; margin: 0px;")
+        route_label.setStyleSheet("font-size: 18px; margin: 0px;")
         info_layout.addWidget(route_label)
         
-        # Compact aircraft type
+        # Larger aircraft type
         aircraft_label = QLabel(flight.get('plane', 'N/A'))
-        aircraft_label.setStyleSheet("font-size: 11px; color: #666; margin: 0px;")
+        aircraft_label.setStyleSheet("font-size: 16px; color: #666; margin: 0px;")
         info_layout.addWidget(aircraft_label)
         
         main_layout.addLayout(info_layout)
@@ -902,18 +910,18 @@ class FlightTrackerGUI(QMainWindow):
         left_data.setSpacing(1)
         left_data.setContentsMargins(0, 0, 0, 0)
         
-        # Altitude (compact)
+        # Altitude (large)
         altitude = flight.get('altitude', 0)
         altitude_text = f"{altitude:,}ft" if altitude else 'N/A'
         altitude_label = QLabel(altitude_text)
-        altitude_label.setStyleSheet("font-size: 12px; font-weight: bold; margin: 0px;")
+        altitude_label.setStyleSheet("font-size: 18px; font-weight: bold; margin: 0px;")
         left_data.addWidget(altitude_label)
         
-        # Vertical Speed (compact)
+        # Vertical Speed (larger)
         vspeed = flight.get('vertical_speed', 0)
         vspeed_text = f"{vspeed:,}fpm" if vspeed else 'N/A'
         vspeed_label = QLabel(vspeed_text)
-        vspeed_label.setStyleSheet("font-size: 10px; color: #666; margin: 0px;")
+        vspeed_label.setStyleSheet("font-size: 14px; color: #666; margin: 0px;")
         left_data.addWidget(vspeed_label)
         
         data_layout.addLayout(left_data)
@@ -923,7 +931,7 @@ class FlightTrackerGUI(QMainWindow):
         right_data.setSpacing(1)
         right_data.setContentsMargins(0, 0, 0, 0)
         
-        # Distance (compact)
+        # Distance (large)
         distance = self.calculate_distance(flight)
         if distance:
             distance_miles = distance * 0.621371
@@ -931,14 +939,14 @@ class FlightTrackerGUI(QMainWindow):
         else:
             distance_text = 'N/A'
         distance_label = QLabel(distance_text)
-        distance_label.setStyleSheet("font-size: 12px; font-weight: bold; margin: 0px;")
+        distance_label.setStyleSheet("font-size: 18px; font-weight: bold; margin: 0px;")
         right_data.addWidget(distance_label)
         
-        # Speed (if available)
+        # Speed (larger)
         speed = flight.get('speed', 0)
         speed_text = f"{speed}kts" if speed else 'N/A'
         speed_label = QLabel(speed_text)
-        speed_label.setStyleSheet("font-size: 10px; color: #666; margin: 0px;")
+        speed_label.setStyleSheet("font-size: 14px; color: #666; margin: 0px;")
         right_data.addWidget(speed_label)
         
         data_layout.addLayout(right_data)
@@ -981,7 +989,8 @@ class FlightTrackerGUI(QMainWindow):
             if item and item.widget():
                 item.widget().setParent(None)
         
-        # Create cards for each filtered flight
+        # Create cards for flights, but limit to 3 visible at once for better readability
+        # The scroll area will handle showing more flights through scrolling
         for flight in filtered_flights:
             card = self.create_flight_card(flight)
             self.cards_layout.addWidget(card)
@@ -1201,6 +1210,63 @@ class FlightTrackerGUI(QMainWindow):
                 }
             """)
         
+    def refresh_scroll_area_theme(self):
+        """Force refresh the scroll area theme after theme changes"""
+        if hasattr(self, 'flight_scroll_area'):
+            # Get current theme colors
+            if self.is_dark_mode:
+                bg_color = DARK_THEME['scroll_area']
+                widget_bg_color = DARK_THEME['scroll_area_widget']
+            else:
+                bg_color = LIGHT_THEME['scroll_area']
+                widget_bg_color = LIGHT_THEME['scroll_area_widget']
+            
+            # Clear any existing styles first
+            self.flight_scroll_area.setStyleSheet("")
+            if self.flight_scroll_area.viewport():
+                self.flight_scroll_area.viewport().setStyleSheet("")
+            if hasattr(self, 'cards_container'):
+                self.cards_container.setStyleSheet("")
+            
+            # Apply aggressive style directly to the scroll area
+            scroll_style = f"""
+                QScrollArea#flightScrollArea {{
+                    background: {bg_color} !important;
+                    background-color: {bg_color} !important;
+                    border: none !important;
+                }}
+                QScrollArea#flightScrollArea * {{
+                    background: {bg_color} !important;
+                    background-color: {bg_color} !important;
+                }}
+            """
+            
+            self.flight_scroll_area.setStyleSheet(scroll_style)
+            
+            # Also apply to viewport directly with more specific styles
+            if self.flight_scroll_area.viewport():
+                viewport_style = f"""
+                    * {{
+                        background: {bg_color} !important;
+                        background-color: {bg_color} !important;
+                    }}
+                """
+                self.flight_scroll_area.viewport().setStyleSheet(viewport_style)
+            
+            # Apply to cards container as well
+            if hasattr(self, 'cards_container'):
+                container_style = f"""
+                    QWidget#cardsContainer {{
+                        background: {bg_color} !important;
+                        background-color: {bg_color} !important;
+                    }}
+                """
+                self.cards_container.setStyleSheet(container_style)
+            
+            # Force refresh
+            self.flight_scroll_area.update()
+            self.flight_scroll_area.repaint()
+            
     def apply_theme(self):
         """Apply the current theme to the application"""
         if self.is_dark_mode:
@@ -1308,6 +1374,10 @@ class FlightTrackerGUI(QMainWindow):
                     background-color: {theme['scroll_area']};
                     border: none;
                 }}
+                QScrollArea#flightScrollArea {{
+                    background-color: {theme['scroll_area']};
+                    border: none;
+                }}
                 QScrollArea QWidget {{
                     background-color: {theme['scroll_area_widget']};
                 }}
@@ -1329,6 +1399,42 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QSlider::handle:horizontal:hover {{
                     background: {theme['button_hover']};
+                }}
+                QScrollBar:vertical {{
+                    background: {theme['scroll_area']};
+                    width: 20px;
+                    border: 1px solid {theme['input_border']};
+                    border-radius: 10px;
+                    margin: 0px;
+                }}
+                QScrollBar::handle:vertical {{
+                    background: {theme['input_focus']};
+                    border: 1px solid {theme['button_hover']};
+                    border-radius: 9px;
+                    min-height: 30px;
+                    margin: 1px;
+                }}
+                QScrollBar::handle:vertical:hover {{
+                    background: {theme['button_hover']};
+                }}
+                QScrollBar::handle:vertical:pressed {{
+                    background: {theme['button_pressed']};
+                }}
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+                    background: {theme['input_border']};
+                    height: 20px;
+                    border-radius: 10px;
+                }}
+                QScrollBar::add-line:vertical:hover, QScrollBar::sub-line:vertical:hover {{
+                    background: {theme['input_focus']};
+                }}
+                QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {{
+                    background: {theme['text_primary']};
+                    width: 8px;
+                    height: 8px;
+                }}
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
+                    background: transparent;
                 }}
             """)
         else:
@@ -1408,29 +1514,72 @@ class FlightTrackerGUI(QMainWindow):
                     background-color: {theme['scroll_area']};
                     border: none;
                 }}
+                QScrollArea#flightScrollArea {{
+                    background-color: {theme['scroll_area']};
+                    border: none;
+                }}
                 QScrollArea QWidget {{
                     background-color: {theme['scroll_area_widget']};
                 }}
                 QWidget#cardsContainer {{
-                    background-color: {THEME_COLORS['background']};
+                    background-color: {theme['scroll_area']};
                 }}
                 QSlider::groove:horizontal {{
-                    border: 1px solid #ddd;
+                    border: 1px solid {theme['border']};
                     height: 8px;
-                    background: #f0f0f0;
+                    background: {theme['scroll_area']};
                     border-radius: 4px;
                 }}
                 QSlider::handle:horizontal {{
-                    background: {THEME_COLORS['primary']};
-                    border: 1px solid {THEME_COLORS['primary_hover']};
+                    background: {theme['primary']};
+                    border: 1px solid {theme['primary_hover']};
                     width: 18px;
                     margin: -2px 0;
                     border-radius: 9px;
                 }}
                 QSlider::handle:horizontal:hover {{
-                    background: {THEME_COLORS['primary_hover']};
+                    background: {theme['primary_hover']};
+                }}
+                QScrollBar:vertical {{
+                    background: {theme['scroll_area']};
+                    width: 20px;
+                    border: 1px solid {theme['border']};
+                    border-radius: 10px;
+                    margin: 0px;
+                }}
+                QScrollBar::handle:vertical {{
+                    background: {theme['primary']};
+                    border: 1px solid {theme['primary_hover']};
+                    border-radius: 9px;
+                    min-height: 30px;
+                    margin: 1px;
+                }}
+                QScrollBar::handle:vertical:hover {{
+                    background: {theme['primary_hover']};
+                }}
+                QScrollBar::handle:vertical:pressed {{
+                    background: {theme['primary_pressed']};
+                }}
+                QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+                    background: {theme['border']};
+                    height: 20px;
+                    border-radius: 10px;
+                }}
+                QScrollBar::add-line:vertical:hover, QScrollBar::sub-line:vertical:hover {{
+                    background: {theme['primary']};
+                }}
+                QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {{
+                    background: {theme['text_primary']};
+                    width: 8px;
+                    height: 8px;
+                }}
+                QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {{
+                    background: transparent;
                 }}
             """)
+        
+        # Force refresh the scroll area theme
+        self.refresh_scroll_area_theme()
         
     def keyPressEvent(self, event):
         """Handle keyboard shortcuts"""
