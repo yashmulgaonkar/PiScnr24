@@ -848,7 +848,7 @@ class FlightTrackerGUI(QMainWindow):
     def create_flight_card(self, flight):
         """Create a compact card for a single flight optimized for small screens"""
         card = QFrame()
-        card.setFrameStyle(QFrame.Box)
+        card.setFrameStyle(QFrame.NoFrame)
         card.setObjectName("flightCard")
         card.setMaximumHeight(135)  # Further increased height for even larger fonts
         
@@ -1355,14 +1355,13 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QFrame#flightCard {{
                     background-color: {theme['flight_card']};
-                    border: 1px solid {theme['flight_card_border']};
+                    border: none;
                     border-radius: 4px;
                     margin: 1px;
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
                 QFrame#flightCard:hover {{
-                    border-color: {theme['input_focus']};
                     background-color: {theme['flight_card_hover']};
                 }}
                 QFrame#flightCard QLabel {{
@@ -1495,14 +1494,13 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QFrame#flightCard {{
                     background-color: {theme['flight_card']};
-                    border: 1px solid {theme['flight_card_border']};
+                    border: none;
                     border-radius: 4px;
                     margin: 1px;
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
                 QFrame#flightCard:hover {{
-                    border-color: {theme['input_focus']};
                     background-color: {theme['flight_card_hover']};
                 }}
                 QFrame#flightCard QLabel {{
