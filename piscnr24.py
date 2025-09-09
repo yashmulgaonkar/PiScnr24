@@ -847,8 +847,7 @@ class FlightTrackerGUI(QMainWindow):
     
     def create_flight_card(self, flight):
         """Create a compact card for a single flight optimized for small screens"""
-        card = QFrame()
-        card.setFrameStyle(QFrame.NoFrame)
+        card = QWidget()
         card.setObjectName("flightCard")
         card.setMaximumHeight(135)  # Further increased height for even larger fonts
         
@@ -1353,7 +1352,7 @@ class FlightTrackerGUI(QMainWindow):
                     border-color: {theme['input_focus']};
                     background-color: {theme['frame_hover']};
                 }}
-                QFrame#flightCard {{
+                QWidget#flightCard {{
                     background-color: {theme['flight_card']};
                     border: none !important;
                     border-radius: 4px;
@@ -1361,10 +1360,10 @@ class FlightTrackerGUI(QMainWindow):
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
-                QFrame#flightCard:hover {{
+                QWidget#flightCard:hover {{
                     background-color: {theme['flight_card_hover']};
                 }}
-                QFrame#flightCard QLabel {{
+                QWidget#flightCard QLabel {{
                     color: {theme['flight_card_text']} !important;
                     margin: 0px;
                     padding: 0px;
@@ -1492,7 +1491,7 @@ class FlightTrackerGUI(QMainWindow):
                     border-color: {theme['input_focus']};
                     background-color: {theme['frame_hover']};
                 }}
-                QFrame#flightCard {{
+                QWidget#flightCard {{
                     background-color: {theme['flight_card']};
                     border: none !important;
                     border-radius: 4px;
@@ -1500,10 +1499,10 @@ class FlightTrackerGUI(QMainWindow):
                     padding: 3px;
                     color: {theme['flight_card_text']};
                 }}
-                QFrame#flightCard:hover {{
+                QWidget#flightCard:hover {{
                     background-color: {theme['flight_card_hover']};
                 }}
-                QFrame#flightCard QLabel {{
+                QWidget#flightCard QLabel {{
                     color: {theme['flight_card_text']} !important;
                     margin: 0px;
                     padding: 0px;
