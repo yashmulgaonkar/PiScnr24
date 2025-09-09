@@ -1354,7 +1354,7 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QWidget#flightCard {{
                     background-color: {theme['flight_card']};
-                    border: none !important;
+                    border: 1px solid {theme['flight_card_border']};
                     border-radius: 4px;
                     margin: 1px;
                     padding: 3px;
@@ -1499,7 +1499,7 @@ class FlightTrackerGUI(QMainWindow):
                 }}
                 QWidget#flightCard {{
                     background-color: {theme['flight_card']};
-                    border: none !important;
+                    border: 1px solid {theme['flight_card_border']};
                     border-radius: 4px;
                     margin: 1px;
                     padding: 3px;
