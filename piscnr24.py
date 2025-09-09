@@ -859,7 +859,7 @@ class FlightTrackerGUI(QMainWindow):
         """Create a compact card for a single flight optimized for small screens"""
         card = QWidget()
         card.setObjectName("flightCard")
-        card.setMaximumHeight(145)  # Increased height for larger logos and fonts
+        card.setMaximumHeight(170)  # Increased height for larger logos, fonts, and status indicator
         
         # Compact main layout for the card
         main_layout = QHBoxLayout(card)
@@ -961,6 +961,44 @@ class FlightTrackerGUI(QMainWindow):
         
         data_layout.addLayout(right_data)
         main_layout.addWidget(data_widget)
+        
+        # Add On-Time Status indicator at the bottom of the card
+        on_time_status = flight.get('on_time_status', 'Unknown')
+        status_label = QLabel(f"Status: {on_time_status}")
+        status_label.setAlignment(Qt.AlignCenter)
+        
+        # Style the status label with color coding
+        if on_time_status == "On Time":
+            status_color = "#27ae60"  # Green
+            bg_color = "#d5f4e6"  # Light green background
+        elif "Delayed" in on_time_status:
+            status_color = "#e74c3c"  # Red
+            bg_color = "#fdeaea"  # Light red background
+        elif on_time_status == "Cancelled":
+            status_color = "#8e44ad"  # Purple
+            bg_color = "#f4ecf7"  # Light purple background
+        else:
+            status_color = "#7f8c8d"  # Gray
+            bg_color = "#ecf0f1"  # Light gray background
+        
+        status_label.setStyleSheet(f"""
+            font-size: 16px; 
+            font-weight: bold; 
+            color: {status_color}; 
+            background-color: {bg_color}; 
+            border-radius: 8px; 
+            padding: 4px 8px; 
+            margin: 2px 0px;
+        """)
+        status_label.setObjectName("statusLabel")
+        
+        # Create a horizontal layout for the status to center it
+        status_layout = QHBoxLayout()
+        status_layout.addStretch()
+        status_layout.addWidget(status_label)
+        status_layout.addStretch()
+        
+        main_layout.addLayout(status_layout)
         
         # Make card clickable
         card.mousePressEvent = lambda event: self.on_card_clicked(flight)
@@ -1401,6 +1439,12 @@ class FlightTrackerGUI(QMainWindow):
                     margin: 0px;
                     padding: 0px;
                 }}
+                QWidget#flightCard QLabel#statusLabel {{
+                    border: none !important;
+                    margin: 2px 0px;
+                    padding: 4px 8px;
+                    border-radius: 8px;
+                }}
                 QScrollArea {{
                     background-color: {theme['scroll_area']};
                     border: none;
@@ -1553,6 +1597,12 @@ class FlightTrackerGUI(QMainWindow):
                     background: transparent !important;
                     margin: 0px;
                     padding: 0px;
+                }}
+                QWidget#flightCard QLabel#statusLabel {{
+                    border: none !important;
+                    margin: 2px 0px;
+                    padding: 4px 8px;
+                    border-radius: 8px;
                 }}
                 QScrollArea {{
                     background-color: {theme['scroll_area']};
