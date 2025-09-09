@@ -148,14 +148,6 @@ class Overhead:
                     try:
                         details = self._api.get_flight_details(flight)
 
-                        # DEBUG: Print available fields to understand API response structure
-                        # Uncomment these lines if you need to debug the API response structure:
-                        # print(f"🔍 Available flight detail keys: {details.keys()}")
-                        # if 'time' in details:
-                        #     print(f"⏰ Time data: {details['time']}")
-                        # if 'status' in details:
-                        #     print(f"📊 Status data: {details['status']}")
-
                         # Get plane type
                         try:
                             plane = details["aircraft"]["model"]["text"]
@@ -183,6 +175,15 @@ class Overhead:
                             else ""
                         )
 
+                        # DEBUG: Print available fields to understand API response structure (after callsign is defined)
+                        # Enable debug for specific flights
+                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                            print(f"🔍 Flight {callsign} - Available keys: {list(details.keys()) if details else 'None'}")
+                            if 'time' in details:
+                                print(f"⏰ Time data for {callsign}: {details['time']}")
+                            if 'status' in details:
+                                print(f"📊 Status data for {callsign}: {details['status']}")
+
                         # Extract timing and status information for on-time indicator
                         flight_status = ""
                         delay_minutes = 0
@@ -191,53 +192,80 @@ class Overhead:
                         actual_departure = ""
                         
                         try:
-                            # Try to extract timing information from details
-                            # FlightRadar24 API typically provides time data in 'time' or 'status' sections
+                            # Calculate on-time status based on scheduled vs estimated arrival times
                             if 'time' in details:
                                 time_data = details['time']
-                                if 'scheduled' in time_data and 'departure' in time_data['scheduled']:
-                                    scheduled_departure = time_data['scheduled']['departure']
-                                if 'real' in time_data and 'departure' in time_data['real']:
-                                    actual_departure = time_data['real']['departure']
                                 
-                                # Calculate delay if we have both scheduled and actual times
-                                if scheduled_departure and actual_departure:
-                                    # Convert to timestamps and calculate delay
-                                    import datetime
+                                # Get scheduled and estimated arrival times
+                                scheduled_arrival = None
+                                estimated_arrival = None
+                                
+                                if 'scheduled' in time_data and 'arrival' in time_data['scheduled']:
+                                    scheduled_arrival = time_data['scheduled']['arrival']
+                                
+                                # Try estimated arrival first, then other.eta as fallback
+                                if 'estimated' in time_data and 'arrival' in time_data['estimated'] and time_data['estimated']['arrival']:
+                                    estimated_arrival = time_data['estimated']['arrival']
+                                elif 'other' in time_data and 'eta' in time_data['other'] and time_data['other']['eta']:
+                                    estimated_arrival = time_data['other']['eta']
+                                
+                                if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                    print(f"🕒 Flight {callsign} scheduled arrival: {scheduled_arrival}")
+                                    print(f"🕒 Flight {callsign} estimated arrival: {estimated_arrival}")
+                                
+                                # Calculate delay based on arrival times
+                                if scheduled_arrival and estimated_arrival:
                                     try:
-                                        sched_time = datetime.datetime.fromtimestamp(scheduled_departure)
-                                        actual_time = datetime.datetime.fromtimestamp(actual_departure)
-                                        delay_seconds = (actual_time - sched_time).total_seconds()
+                                        delay_seconds = estimated_arrival - scheduled_arrival
                                         delay_minutes = int(delay_seconds / 60)
                                         
-                                        # Determine on-time status
-                                        if delay_minutes <= 15:  # Within 15 minutes is considered on-time
+                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                            print(f"⏱️  Flight {callsign} calculated delay: {delay_minutes} minutes")
+                                        
+                                        # Determine status based on delay
+                                        if delay_minutes <= -5:  # More than 5 minutes early
                                             on_time_status = "On Time"
-                                        elif delay_minutes <= 60:
+                                        elif delay_minutes <= 15:  # Within 15 minutes (on time)
+                                            on_time_status = "On Time"
+                                        elif delay_minutes <= 60:  # 16-60 minutes late
                                             on_time_status = f"Delayed {delay_minutes}m"
-                                        else:
+                                        else:  # More than 60 minutes late
                                             hours = delay_minutes // 60
                                             remaining_minutes = delay_minutes % 60
-                                            on_time_status = f"Delayed {hours}h {remaining_minutes}m"
-                                    except (ValueError, TypeError):
+                                            if remaining_minutes > 0:
+                                                on_time_status = f"Delayed {hours}h {remaining_minutes}m"
+                                            else:
+                                                on_time_status = f"Delayed {hours}h"
+                                                
+                                    except (ValueError, TypeError) as e:
+                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                            print(f"❌ Error calculating arrival delay for {callsign}: {e}")
                                         on_time_status = "Unknown"
-                            
-                            # Try to get flight status from status field
-                            if 'status' in details and 'text' in details['status']:
-                                flight_status = details['status']['text']
-                                # Map common status codes to on-time indicators
-                                status_lower = flight_status.lower()
-                                if 'on time' in status_lower or 'scheduled' in status_lower:
-                                    on_time_status = "On Time"
-                                elif 'delayed' in status_lower:
-                                    on_time_status = "Delayed"
-                                elif 'cancelled' in status_lower or 'canceled' in status_lower:
-                                    on_time_status = "Cancelled"
+                                else:
+                                    # Fallback: Try to use status text if timing calculation fails
+                                    if 'status' in details and 'text' in details['status']:
+                                        flight_status = details['status']['text']
+                                        status_lower = flight_status.lower()
+                                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                                            print(f"🏷️  Flight {callsign} fallback to status text: '{flight_status}'")
+                                        
+                                        if 'cancelled' in status_lower or 'canceled' in status_lower:
+                                            on_time_status = "Cancelled"
+                                        elif 'delayed' in status_lower:
+                                            on_time_status = "Delayed"
+                                        elif 'on time' in status_lower or 'scheduled' in status_lower:
+                                            on_time_status = "On Time"
+                                        else:
+                                            on_time_status = "Unknown"
+                                    else:
+                                        on_time_status = "Unknown"
                         
-                        except (KeyError, TypeError, AttributeError):
-                            # If we can't get timing data, fall back to basic status
+                        except (KeyError, TypeError, AttributeError) as e:
+                            # print(f"❌ Error processing status for {callsign}: {e}")
                             on_time_status = "Unknown"
 
+                        if callsign in ["UAL2262", "UAL1343", "SAS935"]:
+                            print(f"✅ Final status for {callsign}: '{on_time_status}'")
                         data.append(
                             {
                                 "plane": plane,
