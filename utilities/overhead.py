@@ -15,9 +15,10 @@ import ssl
 import urllib3
 import platform
 
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, HTTPError, Timeout, RequestException
 from urllib3.exceptions import NewConnectionError
 from urllib3.exceptions import MaxRetryError
+import time
 
 # Disable SSL warnings and certificate verification for Windows
 if platform.system() == "Windows":
@@ -139,10 +140,11 @@ class Overhead:
 
             for flight in flights[:MAX_FLIGHT_LOOKUP]:
                 retries = RETRIES
+                backoff_delay = RATE_LIMIT_DELAY
 
                 while retries:
-                    # Rate limit protection
-                    sleep(RATE_LIMIT_DELAY)
+                    # Rate limit protection with exponential backoff
+                    sleep(backoff_delay)
 
                     # Grab and store details
                     try:
@@ -287,8 +289,63 @@ class Overhead:
                         # print(f"✅ Added flight data for {callsign}")  # Uncomment for detailed debugging
                         break
 
-                    except (KeyError, AttributeError):
+                    except HTTPError as e:
+                        # Handle HTTP errors from FlightRadar24 API
+                        print(f"⚠️  HTTP error for flight {flight.callsign}: {e}")
+                        if e.response.status_code in [525, 502, 503, 504]:
+                            # Server errors - retry with exponential backoff
+                            retries -= 1
+                            if retries > 0:
+                                backoff_delay *= 2  # Double the delay for next retry
+                                print(f"🔄 Retrying flight {flight.callsign} in {backoff_delay}s (attempts left: {retries})")
+                            else:
+                                print(f"❌ Failed to get details for flight {flight.callsign} after all retries")
+                        elif e.response.status_code == 429:
+                            # Rate limited - longer backoff
+                            print(f"🚦 Rate limited, waiting {backoff_delay * 3}s before retry")
+                            sleep(backoff_delay * 2)  # Additional delay for rate limiting
+                            backoff_delay *= 2
+                            retries -= 1
+                        elif e.response.status_code in [404, 410]:
+                            # Flight not found - skip this flight
+                            print(f"🔍 Flight {flight.callsign} details not found (404/410), skipping")
+                            break
+                        else:
+                            # Other HTTP errors - retry once then skip
+                            retries -= 1
+                            if retries <= 0:
+                                print(f"❌ HTTP error {e.response.status_code} for flight {flight.callsign}, skipping")
+                    
+                    except (ConnectionError, Timeout) as e:
+                        # Network connectivity issues - retry with backoff
+                        print(f"🌐 Network error for flight {flight.callsign}: {e}")
                         retries -= 1
+                        if retries > 0:
+                            backoff_delay *= 1.5  # Increase delay for network issues
+                            print(f"🔄 Retrying flight {flight.callsign} in {backoff_delay}s (attempts left: {retries})")
+                        else:
+                            print(f"❌ Network error persists for flight {flight.callsign}, skipping")
+                    
+                    except (KeyError, AttributeError, TypeError) as e:
+                        # Data structure issues - likely API response format changes
+                        print(f"📊 Data structure error for flight {flight.callsign}: {e}")
+                        retries -= 1
+                        if retries <= 0:
+                            print(f"❌ Unable to parse data for flight {flight.callsign}, skipping")
+                    
+                    except RequestException as e:
+                        # Other request-related errors
+                        print(f"🔗 Request error for flight {flight.callsign}: {e}")
+                        retries -= 1
+                        if retries <= 0:
+                            print(f"❌ Request failed for flight {flight.callsign}, skipping")
+                    
+                    except Exception as e:
+                        # Unexpected errors - log and skip
+                        print(f"⚡ Unexpected error for flight {flight.callsign}: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        break  # Don't retry for unexpected errors
 
             print(f"🏁 Data grab complete! Collected {len(data)} flights")
             with self._lock:
@@ -296,16 +353,34 @@ class Overhead:
                 self._processing = False
                 self._data = data
 
-        except (ConnectionError, NewConnectionError, MaxRetryError) as e:
-            print(f"❌ Network error in API call: {e}")
-            self._new_data = False
-            self._processing = False
+        except (ConnectionError, NewConnectionError, MaxRetryError, Timeout) as e:
+            print(f"❌ Network/connection error during data grab: {e}")
+            print("🔄 Will retry on next cycle...")
+            with self._lock:
+                self._new_data = False
+                self._processing = False
+        except HTTPError as e:
+            print(f"❌ HTTP error from FlightRadar24 API: {e}")
+            if hasattr(e, 'response') and e.response:
+                print(f"📊 Response status: {e.response.status_code}")
+            print("🔄 Will retry on next cycle...")
+            with self._lock:
+                self._new_data = False
+                self._processing = False
+        except RequestException as e:
+            print(f"❌ Request error during data grab: {e}")
+            print("🔄 Will retry on next cycle...")
+            with self._lock:
+                self._new_data = False
+                self._processing = False
         except Exception as e:
-            print(f"❌ Unexpected error in API call: {e}")
+            print(f"❌ Unexpected error during data grab: {e}")
             import traceback
             traceback.print_exc()
-            self._new_data = False
-            self._processing = False
+            print("🔄 Will continue and retry on next cycle...")
+            with self._lock:
+                self._new_data = False
+                self._processing = False
 
     @property
     def new_data(self):
